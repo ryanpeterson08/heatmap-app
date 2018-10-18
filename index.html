@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>User GeoJson</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css"
+   integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+   crossorigin=""/>
+   <script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js"
+   integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA=="
+   crossorigin=""></script>
+   <script src="dist/leaflet-heat.js" charset="utf-8"></script>
+   <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+
+    <input type="file" id="input">
+    <div id="map"></div>
+    <script type="text/javascript">
+
+    (function(){
+      var map = L.map('map').setView([45.520343, -122.679880], 13);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      }).addTo(map);
+
+      function onChange(event) {
+          var reader = new FileReader();
+          reader.onload = onReaderLoad;
+          reader.readAsText(event.target.files[0]);
+      }
+
+      function onReaderLoad(event){
+          var geoData = JSON.parse(event.target.result);
+          var cfsCoordinates = geoData.features.map(function(cfs){
+            var location = cfs.geometry.coordinates.reverse();
+            console.log(location);
+            location.push(0.5);
+            return location;
+          });
+          var heatMap = L.heatLayer(cfsCoordinates, {radius: 10});
+          map.addLayer(heatMap);
+          //L.geoJSON(obj).addTo(map);
+      }
+
+      document.getElementById('input').addEventListener('change', onChange);
+
+    }());
+    </script>
+  </body>
+</html>
