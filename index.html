@@ -49,7 +49,10 @@
             location.push(0.5);
             return location;
           });
-          var heatMap = L.heatLayer(cfsCoordinates, {radius: 10});
+          var heatMap = L.heatLayer(cfsCoordinates, {
+            radius: 10,
+            gradient: {0.4: 'grey', 0.65: 'yellow', 0.85: 'orange', 1: 'red'}
+          });
           map.addLayer(heatMap);
           //L.geoJSON(obj).addTo(map);
       }
